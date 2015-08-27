@@ -55,6 +55,10 @@
     self.spring.offlineMode = debug;
 }
 
+- (void)trackingActive:(BOOL)active {
+    self.spring.tracking = active;
+}
+
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - Singleton definitons
 ////////////////////////////////////////////////////////////////////////
@@ -101,6 +105,15 @@ static PSCSpringKitManager *sharedSpringKitManager = nil;
 + (void)debugMode:(BOOL)debug {
     if ([PSCSpringKitManager sharedSpringKitManager] != nil) {
         [[PSCSpringKitManager sharedSpringKitManager] debugMode:debug];
+    }
+    else {
+        NSLog(@"Shared PSCSpringKitManager not created yet!");
+    }
+}
+
++ (void)trackingActive:(BOOL)isTrackingActive {
+    if ([PSCSpringKitManager sharedSpringKitManager] != nil) {
+        [[PSCSpringKitManager sharedSpringKitManager] trackingActive:isTrackingActive];
     }
     else {
         NSLog(@"Shared PSCSpringKitManager not created yet!");

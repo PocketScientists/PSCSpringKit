@@ -16,5 +16,6 @@
 + (void)performCountWithPath:(NSString *)path;
 + (BOOL)containsHitTestClass:(Class)hitTestClass;
 + (void)debugMode:(BOOL)debug;
++ (void)trackingActive:(BOOL)isTrackingActive;
 
 @end

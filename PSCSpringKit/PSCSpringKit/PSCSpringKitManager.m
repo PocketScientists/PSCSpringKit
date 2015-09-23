@@ -7,20 +7,27 @@
 //
 
 #import "PSCSpringKitManager.h"
+#import "SurveySpring.h"
 
 @interface PSCSpringKitManager ()
 
 @property (nonatomic, strong) Spring *spring;
+@property (nonatomic, assign) BOOL survey;
 @property (nonatomic, strong) NSArray *hitTestClasses;
 
 @end
 
 @implementation PSCSpringKitManager
 
-- (id)initWithSite:(NSString *)site application:(NSString *)application path:(NSString *)path hitTestClasses:(NSArray *)hitTestClasses {
+- (id)initWithSite:(NSString *)site application:(NSString *)application path:(NSString *)path hitTestClasses:(NSArray *)hitTestClasses survey:(BOOL)survey {
     self = [super init];
     if (self != nil) {
-        _spring = [[Spring alloc] initWithSiteAndApplication:site application:application];
+        _survey = survey;
+        if (survey) {
+            _spring = [[SurveySpring alloc] initWithSiteAndApplication:site application:application];
+        } else {
+            _spring = [[Spring alloc] initWithSiteAndApplication:site application:application];
+        }
         _path = path;
         _hitTestClasses = hitTestClasses;
         [self performCount];
@@ -65,9 +72,13 @@
 
 static PSCSpringKitManager *sharedSpringKitManager = nil;
 
-+ (PSCSpringKitManager *)createSharedSpringKitManagerWithSite:(NSString *)site application:(NSString *)application path:(NSString *)path hitTestClasses:(NSArray *)hitTestClasses {
-    sharedSpringKitManager = [[PSCSpringKitManager alloc] initWithSite:site application:application path:path hitTestClasses:hitTestClasses];
++ (PSCSpringKitManager *)createSharedSpringKitManagerWithSite:(NSString *)site application:(NSString *)application path:(NSString *)path hitTestClasses:(NSArray *)hitTestClasses survey:(BOOL)survey {
+    sharedSpringKitManager = [[PSCSpringKitManager alloc] initWithSite:site application:application path:path hitTestClasses:hitTestClasses survey:survey];
     return [PSCSpringKitManager sharedSpringKitManager];
+}
+
++ (PSCSpringKitManager *)createSharedSpringKitManagerWithSite:(NSString *)site application:(NSString *)application path:(NSString *)path hitTestClasses:(NSArray *)hitTestClasses {
+    return [self createSharedSpringKitManagerWithSite:site application:application path:path hitTestClasses:hitTestClasses survey:NO];
 }
 
 + (PSCSpringKitManager *)sharedSpringKitManager {

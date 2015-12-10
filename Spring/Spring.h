@@ -71,6 +71,7 @@ extern NSString *const SPRING_APP_CLOSED;
  <div align="center">
  <h3>Migration to iOS 9 </h3>
  </div>
+
  
  <h3>URL Scheme</h3>
  <p>Starting on iOS 9, iOS apps will have to declare what URL schemes they would like to be able to check for and open in the configuration files (plist file) of the app as it is submitted to Apple. So if your application is combining with a specific "Panel App" (e.g. Virtualmeter App), please register the URL scheme in your application, the syntax is as following:</p>

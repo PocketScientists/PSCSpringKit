@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.platform     = :ios, '6.0'
   s.name         = 'PSCSpringKit'
-  s.version      = '1.0.2'
+  s.version      = '1.0.3'
   s.license      = ''
   s.summary      = ''
   s.homepage     = ""

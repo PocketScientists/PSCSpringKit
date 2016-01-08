@@ -21,6 +21,5 @@ Pod::Spec.new do |s|
     #import <Foundation/Foundation.h>
     #import "Spring.h"
 #endif'
-
 end
 

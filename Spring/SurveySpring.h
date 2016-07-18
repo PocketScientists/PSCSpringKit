@@ -14,7 +14,7 @@
 - (id)initWithSiteAndApplication:(NSString *)theSite application:(NSString *)theApplication;
 - (BOOL) isTracking;
 - (void) setTracking:(BOOL) tracking;
-
+- (void) setSSL:(BOOL)ssl;
 - (void) setDebug:(BOOL)debug;
 @end
 

@@ -6,7 +6,6 @@
  */
 
 
-
 /**
  * Static tags of the application status
  */
@@ -29,6 +28,11 @@ extern NSString *const SPRING_APP_CLOSED;
  */
 @property(nonatomic) BOOL debug;
 
+/**
+ * set ssl transmission, deprecated. In the near future, https will be fully adapted.
+ */
+@property(nonatomic, setter=setSSL:, getter=isSSL) BOOL ssl;
+//further plan:__attribute__((deprecated));
 
 /**
  * Enable or disable offline mode. It will be configured in the release process. 
@@ -85,7 +89,7 @@ extern NSString *const SPRING_APP_CLOSED;
  
  
  <h3>App Transport Security (ATS)</h3>
- <p>Starting from iOS 9.0, App Transport Security (ATS) enforces best practices in the secure connections between an app and its back end. Migrating from http to https has to be planed for the more secure communication. However for this moment, if you decide to enable ATS, a temporary solution can be adapted by adding an exception for Kantar Media Audiences measurement box: </p>
+ <p>Starting from iOS 9.0, App Transport Security (ATS) enforces best practices in the secure connections between an app and its back end. Migrating from http to https has to be planed for the more secure communication. However for this moment, if you decide to enable ATS, a temporary solution can be adapted by adding an exception for Kantar Media Audiences measurement box(now we have the public API setSSL(ssl), please don't swtich it on until Kantar media Support Team suggest so): </p>
  
  <div style="border:1px solid black;">
  &lt;key&gt;NSAppTransportSecurity&lt;/key&gt;

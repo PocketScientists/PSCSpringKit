@@ -6,7 +6,6 @@
  */
 
 
-
 /**
  * Static tags of the application status
  */
@@ -28,6 +27,12 @@ extern NSString *const SPRING_APP_CLOSED;
  * Each error is logged without checking this property.
  */
 @property(nonatomic) BOOL debug;
+
+/**
+ * set ssl transmission, deprecated. In the near future, https will be fully adapted.
+ */
+@property(nonatomic, setter=setSSL:, getter=isSSL) BOOL ssl;
+//further plan:__attribute__((deprecated));
 
 /**
  * Enable or disable offline mode. It will be configured in the release process. 
@@ -60,77 +65,103 @@ extern NSString *const SPRING_APP_CLOSED;
 
 /**
  * @mainpage
- * <h3>Version 1.6.0</h3>
+ 
+ <div align="center">
+ <h2>iOS-Spring-lib User Manual</h2>
+ </div>
+ 
+ 
+<div style="background-color: grey;" >
+ <div align="center">
+ <h3>Migration to iOS 9 </h3>
+ </div>
+
+ 
+ <h3>URL Scheme</h3>
+ <p>Starting on iOS 9, iOS apps will have to declare what URL schemes they would like to be able to check for and open in the configuration files (plist file) of the app as it is submitted to Apple. So if your application is combining with a specific "Panel App" (e.g. Virtualmeter App), please register the URL scheme in your application, the syntax is as following:</p>
+ 
+ <div style="border:1px solid black;">
+ <br>&lt;key&gt;LSApplicationQueriesSchemes&lt;/key&gt;
+ <br>&nbsp;&nbsp; &nbsp;&lt;array&gt;
+ <br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;string&gt;<span class="marker"><span style="color:#0000CD;">@oldPanelApp</span>&lt;</span>/string&gt;
+ <br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;string&gt;<span style="color:#0000CD;"><span class="marker">@newPanelApp</span></span>&lt;/string&gt;
+ <br>&nbsp;&nbsp; &nbsp;&lt;/array&gt;</div>
+ 
+ 
+ <h3>App Transport Security (ATS)</h3>
+ <p>Starting from iOS 9.0, App Transport Security (ATS) enforces best practices in the secure connections between an app and its back end. Migrating from http to https has to be planed for the more secure communication. However for this moment, if you decide to enable ATS, a temporary solution can be adapted by adding an exception for Kantar Media Audiences measurement box(now we have the public API setSSL(ssl), please don't swtich it on until Kantar media Support Team suggest so): </p>
+ 
+ <div style="border:1px solid black;">
+ &lt;key&gt;NSAppTransportSecurity&lt;/key&gt;
+ <br>&lt;dict&gt;
+ <br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;
+ <br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;false/&gt;
+ <br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;key&gt;NSExceptionDomains&lt;/key&gt;
+ <br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;dict&gt;
+ <br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;key&gt;<span style="color:#0000CD;">@domain</span>&lt;/key&gt;
+ <br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;dict&gt;
+ <br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;key&gt;NSIncludesSubdomains&lt;/key&gt;
+ <br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;true/&gt;
+ <br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;key&gt;NSTemporaryExceptionAllowsInsecureHTTPLoads&lt;/key&gt;
+ <br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;true/&gt;
+ <br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;key&gt;NSExceptionRequiresForwardSecrecy&lt;/key&gt;
+ <br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;false/&gt;
+ <br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;/dict&gt;
+ <br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;/dict&gt;
+ <br>&nbsp;&nbsp; &nbsp;&lt;/dict&gt;</div>
+ <p><i><span class="marker"><span style="color:#0000CD;">if</span></span> ATS is not enabled in your application, as NSAllowsArbitraryLoads = true, then you don't need to modify anything.
+ </i></p>
+ 
+ <h3>BitCode</h3>
+ <p>Bitcode is a new feature on iOS 9, an intermediate representation of a compiled program. Now you have the new Spring lib with bitcode enabled, for your application you have the chance to enable or disable the bitcode service.</p>
+ </div>
+
+
+
+ 
+ 
+ 
+ 
+ <h3>Offline Mode</h3>
+ <p>iOS-Spring-lib has feature so called "offlineMode". This mode can be switched on and off by using public API: Spring.offlineMode.
+ If the lib is configured to offlineMode, Spring library will hold all requests in a local buffer and send them when the device goes back online. Spring lib checks the Internet connection regularly by using the iOS Timer and send the data as soon as possible.
+ Please notice:
+ -# Old requests will be dropped if too many requests pump into local buffer for the limitation in buffer size. The default buffer size is 500. The data will be stored in a local file, so the lib will not lose the requests even if the application terminates.
+ -# Spring lib tries to send the requests in a fixed rate, 10 seconds by default, and sends them if device is online.</p>
+ 
+  <h3>UDID</h3>
  * <table>
- * <tr>
- * <th>Changes</th><th>Attribute</th><th>Description</th>
- * </tr>
- <tr>
- <td>
- PanelApp Switch: Url Scheme</td>
- <td>
- New Feature</td>
- <td>
- <p>
- Since Spring 1.6.0, the lib will try to call a corresponding PanelApp (by URL Scheme, happens in the initializaiton phase, only called once if ifv is not changed since last lauch), and send ifv (identifier_for_vendor) and related parameters to the PanelApp. This mechanism is designed for identifying each single device owned by the end user. (ifv is unique for each vendor, but not globally)</p>
- <p>
- For adapting this mechanism, the clients of Spring lib has to implement their own PanelApp and also import Spring/SpringStreams lib into it.</p>
- </td>
- </tr>
- <tr>
- <td>
- arm64 bits support</td>
- <td>
- New Feature</td>
- <td>
- <p>
- Since Spring 1.6.0, the lib will support arm64 bit&nbsp;architecture, Spring lib will be applicable for latest iOS devices.</p>
- </td>
- </tr>
- <tr>
- <td>
- Customized special fields</td>
- <td>
- Changes</td>
- <td>
- <p>
- More customized parameteres/special fields are inserted into measuring http request, applied to our lib accordingly based on the different domains.</p>
- </td>
- </tr>
+ * <tr><th> </th><th>Device ID(did)</th><th>Advertising ID(ai)</th><th>MAC ID(mid)</th><th>ID_For_Vendor(ifv)</th></tr>
+
+ <tr><td>iOS 4</td><td><div align="center">---</div></td><td><div align="center">---</div></td><td>MAC ID(mid)</td><td><div align="center">---</div></td></tr>
+ <tr><td>iOS 5</td><td><div align="center">---</div></td><td><div align="center">---</div></td><td>MAC ID(mid)</td><td><div align="center">---</div></td></tr>
+ <tr><td>iOS 6</td><td><div align="center">---</div></td><td>Advertising ID(ai)</td><td>MAC ID(mid)</td><td>ID_For_Vendor(ifv)</td></tr>
+ <tr><td>iOS 7</td><td><div align="center">---</div></td><td>Advertising ID(ai)</td><td><div align="center">---</div></td><td>ID_For_Vendor(ifv)</td></tr>
+ <tr><td>iOS 8</td><td><div align="center">---</div></td><td>Advertising ID(ai)</td><td><div align="center">---</div></td><td>ID_For_Vendor(ifv)</td></tr>
+ <tr><td>iOS 9</td><td><div align="center">---</div></td><td>Advertising ID(ai)</td><td><div align="center">---</div></td><td>ID_For_Vendor(ifv)</td></tr>
  * </table>
 
- * <h3>Version 1.5.2</h3>
- * <table>
- * <tr>
- * <th></th><th>Attribute</th><th>Description</th>
- * </tr>
- * <tr>
- * <td>Identifier of Device</td><td>New Feature</td><td> The identifier of the device would be advertisement id + identifier_for_vendor(https://developer.apple.com/library/ios/documentation/uikit/reference/UIDevice_Class/Reference/UIDevice.html#//apple_ref/occ/instp/UIDevice/identifierForVendor) if your application contains video advertisement, otherwise the identifier of the device would be only identifier for vendor. This change responses to the modification of Apple Developers' Policy, advertisement ids are not accepted if no video adversements are involved in the application. </td>
- * </tr>
- * <tr>
- * <td>lib Management</td><td>Change</td><td>PLEASE NOTICE: We have intergrated our spring sensor libraries for our clients to one, and this universal lib is applicable for all our clients. Your customized configurations are applied based on different domain, so it does not influence the functionalities of the library. This change affects some clients who are using old Spring library, please change your header file Spring*.h (your company indentifier), to Spring.h</td>
- * </tr>
- * </table>
- * <h3>Version 1.5.1</h3>
- * <table>
- * <tr>
- * <th></th><th>Attribute</th><th>Description</th>
- * </tr>
- * <tr>
- * <td>Advertising-Framework</td><td>Improvement</td><td>Advertising-Framework is linked as optional for the compatibility purpose of iOS versions earlier than iOS 6</td>
- * </table>
- * <h3>Version 1.5.0</h3>
- * <table>
- * <tr>
- * <th></th><th>Attribute</th><th>Description</th>
- * </tr>
- * <tr>
- * <td>OfflineMode</td><td>New Feature</td><td>If the app is configured to offlineMode, spring library would hold all requests in a local buffer and send them until the device goes back online.
- *  Spring lib checks the internet connection regularly by using a Timer and send the data as soon as possible. Please notice:\n
- * -# Old requests would be droped if too many requests pump into local buffer for the limitation in buffer size. The default buffer size is 1000. The data will be stored in a local file, so we would not lose the requests even if the applicaiton terminated.
- * -# Spring lib tries to send the requests in a fixed rate, 10 seconds by default, and sends them if device is online. This is achieved by using Apple NSTimer.
- \n\n
- * This mode can be switched on and off by using public API. @see Spring.offlineMode</td>
- * </tr>
- * </table>
+ <p>Considering that the Apple private policy is changing all the time, Spring libs have to adapt different UDIDs for identifying the end user's devices.</p>
+ <p>
+ -# Since iOS 6, device ID and mac ID are not available anymore,
+ -# Switch to Advertising ID and ID_For_Vendor</p>
+ 
+ <p><i>Please attention: Apple will reject all the applications which retrieve advertising ID but with no advertising content provided. So Advertising-Framework is linked as optional in Spring libs, If the Advertising ID should be used as udid, please import Advertising-Framework into your projects.</i></p>
+ 
+ <p><i>Please attention: Only initialize Spring lib once in your whole project, you only need one Spring object.</i></p>
+ 
+ 
+ 
+ 
+ <h3>NOTICE</h3>
+ <p><i>Please Note: Some components in Spring libs are running in background threads. Please keep the initialization and usage of Spring libs in your main thread, Spring libs will not block your UI display.
+</i></p>
+ <h1>  </h1><h1>  </h1>
+ <div align="center">
+  <h1><a href="ReleaseNote.html">****RELEASE NOTE****</a></h1>
+ </div>
+
+
+
+
  */

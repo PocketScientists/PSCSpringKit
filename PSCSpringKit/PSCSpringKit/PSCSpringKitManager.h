@@ -12,6 +12,8 @@
 @property (nonatomic, strong) NSString *path;
 
 + (PSCSpringKitManager *)createSharedSpringKitManagerWithSite:(NSString *)site application:(NSString *)application path:(NSString *)path hitTestClasses:(NSArray *)hitTestClasses;
++ (PSCSpringKitManager *)createSharedSpringKitManagerWithSite:(NSString *)site application:(NSString *)application path:(NSString *)path hitTestClasses:(NSArray *)hitTestClasses survey:(BOOL)survey;
+
 + (void)performCount;
 + (void)performCountWithPath:(NSString *)path;
 + (BOOL)containsHitTestClass:(Class)hitTestClass;

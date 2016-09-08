@@ -4,7 +4,9 @@ Pod::Spec.new do |s|
   s.version      = '1.0.4'
   s.license      = ''
   s.summary      = ''
-  s.homepage     = ""
+  s.homepage     = 'http://www.nousguide.com/de/'
+  s.authors      = 'NOUS Guide GmbH.'
+  s.summary      = 'Easy to use API for Spring Mobile App Sensor (aka ÖWA Mobile App Sensor)'
   s.source       = { :git => 'https://github.com/PocketScientists/PSCSpringKit.git' }
   s.source_files = 'PSCSpringKit/PSCSpringKit/*.{h,m}', 'Spring/*{h,m}'
   s.library = 'springappsensorfat'

@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.platform     = :ios, '6.0'
   s.name         = 'PSCSpringKit'
-  s.version      = '1.0.4'
+  s.version      = '1.8.12'
   s.license      = ''
   s.summary      = ''
   s.homepage     = 'http://www.nousguide.com/de/'
@@ -24,4 +24,3 @@ Pod::Spec.new do |s|
     #import "Spring.h"
 #endif'
 end
-
